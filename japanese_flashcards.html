@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Japanese Vocabulary Flashcards</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+
+        .category-selector {
+            margin-bottom: 30px;
+        }
+
+        select {
+            padding: 12px 20px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            min-width: 200px;
+        }
+
+        .flashcard {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 15px;
+            padding: 60px 40px;
+            margin: 30px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .flashcard::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: rotate(45deg);
+            transition: all 0.5s;
+            opacity: 0;
+        }
+
+        .flashcard:hover::before {
+            animation: shine 0.8s ease-in-out;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); opacity: 0; }
+        }
+
+        .flashcard:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .flashcard.flipped {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .japanese {
+            font-size: 3em;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .english {
+            font-size: 1.8em;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            font-weight: 300;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .progress {
+            font-size: 18px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .hint {
+            margin-top: 20px;
+            color: #888;
+            font-style: italic;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .japanese {
+                font-size: 2.5em;
+            }
+            
+            .english {
+                font-size: 1.5em;
+            }
+            
+            .controls {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🇯🇵 Japanese Flashcards</h1>
+        
+        <div class="category-selector">
+            <select id="categorySelect">
+                <option value="all">All Categories</option>
+                <option value="greetings">Greetings & Basic</option>
+                <option value="places">Places & Locations</option>
+                <option value="directions">Directions & Navigation</option>
+                <option value="health">Health & Medical</option>
+                <option value="shopping">Shopping & Services</option>
+                <option value="clothing">Clothing & Accessories</option>
+                <option value="food">Food & Dining</option>
+                <option value="verbs">Verbs</option>
+                <option value="body">Body</option>
+                <option value="adjectives">Adjectives</option>
+                <option value="weather">Weather</option>
+                <option value="timeExpressions">Time and frequency</option>
+                <option value="conjunctions">Conjunctions</option>
+                <option value="places">Places</option>
+                <option value="weather">Weather</option>
+                <option value="housing">House</option>
+                <option value="plain">Plain Forms</option>
+                <option value="household">House Objects</option>
+                <option value="subjects">Subjects</option>
+                <option value="school">School</option>
+                <option value="transportation">Transportation</option>
+                <option value="conjunctions">Conjunctions</option>
+                <option value="descriptive">More Adjectives</option>
+                <option value="health">Health</option>
+                <option value="shopping">Shopping</option>
+
+            </select>
+        </div>
+
+        <div class="flashcard" id="flashcard">
+            <div class="japanese" id="japanese">こんにちは</div>
+            <div class="english" id="english">Click to reveal</div>
+        </div>
+
+        <div class="controls">
+            <button id="prevBtn">← Previous</button>
+            <div class="progress" id="progress">1 / 150</div>
+            <button id="nextBtn">Next →</button>
+        </div>
+
+        <div class="hint">
+            💡 Click the card to flip between Japanese and English
+        </div>
+    </div>
+
+    <script>
+        const flashcards = {
+
+             verbs: [
+                { japanese: "はらいます", english: "to pay" },
+                { japanese: "ふとります", english: "to get fat, to put on weight" },
+                { japanese: "にあいます", english: "to suit, look good in" },
+                { japanese: "すごします", english: "to spend time" },
+                { japanese: "つけます", english: "to switch on, to attach" },
+                { japanese: "だします", english: "to put out, to send" },
+                { japanese: "すぎます", english: "to pass, to exceed" },
+                { japanese: "します", english: "to die, to pass away" },
+                { japanese: "まちます", english: "to wait" },
+                { japanese: "みます (見ます)", english: "to see, to watch" },
+                { japanese: "もちます", english: "to have, to hold" },
+                { japanese: "もらいます", english: "to receive" },
+                { japanese: "やすみます (休みます)", english: "to rest" },
+                { japanese: "よみます", english: "to read" },
+                { japanese: "わかります (わかります)", english: "to understand" },
+                { japanese: "りょうりします", english: "to cook" },
+                { japanese: "りょこうします", english: "to travel" },
+                { japanese: "みえます (みえます)", english: "to be able to see" },
+                { japanese: "れんしゅうします", english: "to practice" },
+                { japanese: "みがきます", english: "to brush" },
+                { japanese: "もって行きます", english: "to take [something]" },
+                { japanese: "もって帰ります", english: "to take [something] home" },
+                { japanese: "もって来ます", english: "to bring [something]" },
+                { japanese: "もどります", english: "to return, to go back" },
+                { japanese: "やせます", english: "to become thin, to lose weight" },
+                { japanese: "やめます", english: "to quit, to resign" },
+                { japanese: "やります", english: "to do, to give (lower status)" },
+                { japanese: "わすれます", english: "to forget, to leave behind" },
+                { japanese: "よびます", english: "to call, to invite" },
+                { japanese: "わらいます", english: "to laugh" },
+                { japanese: "さんぽします", english: "to stroll" },
+                { japanese: "すみます (すみます)", english: "to live, to reside" },
+                { japanese: "すわります", english: "to sit down" },
+                { japanese: "たちます", english: "to stand" },
+                { japanese: "たべます (たべます)", english: "to eat" },
+                { japanese: "つかいます", english: "to use" },
+                { japanese: "つくります", english: "to make" },
+                { japanese: "できます", english: "to be able to do" },
+                { japanese: "なります", english: "to become" },
+                { japanese: "ねます", english: "to sleep" },
+                { japanese: "のみます", english: "to drink" },
+                { japanese: "はじめます", english: "to start, to begin" },
+                { japanese: "はじまります", english: "to start, to begin" },
+                { japanese: "はなします (はなします)", english: "to talk, to speak" },
+                { japanese: "べんきょうします", english: "to study" },
+                { japanese: "ひきます", english: "to play (stringed instruments)" },
+                { japanese: "はしります", english: "to run" },
+                { japanese: "ならいます", english: "to learn" },
+                { japanese: "はきます", english: "to wear (below torso)" },
+                { japanese: "はいります (はいります)", english: "to enter" },
+                { japanese: "つきます", english: "to arrive at" },
+                { japanese: "でんわします (でんわします)", english: "to call" },
+                { japanese: "でます", english: "to leave" },
+                { japanese: "でかけます", english: "to go out" },
+                { japanese: "たのしみます", english: "to enjoy (oneself)" },
+                { japanese: "はたらきます", english: "to work (at)" },
+                { japanese: "そつぎょうします", english: "to graduate" },
+                { japanese: "しょうかいします", english: "to introduce" },
+                { japanese: "とまります", english: "to stay at (short period)" },
+                { japanese: "とまります", english: "to stop" },
+                { japanese: "てつだいます", english: "to help, to assist" },
+                { japanese: "たのしみにします", english: "to look forward to" },
+                { japanese: "しゃべります", english: "to chat" },
+                { japanese: "せつめいします", english: "to explain" },
+                { japanese: "じゅんびします", english: "to prepare" },
+                { japanese: "びっくりします", english: "to be surprised" },
+                { japanese: "しんぱいします", english: "to worry" },
+                { japanese: "しります", english: "to know" },
+                { japanese: "なきます", english: "to cry" },
+                { japanese: "しめます", english: "to close" },
+                { japanese: "おしえます", english: "to teach, to tell" },
+                { japanese: "おぼえます", english: "to remember, to learn by heart" },
+                { japanese: "おもいます (思います)", english: "to think" },
+                { japanese: "がんばります", english: "to persist, to try hard" },
+                { japanese: "しつもん (します)", english: "question (to ask a question)" },
+                { japanese: "べんきょう (します)", english: "study (to study)" },
+                { japanese: "わかります (分かります)", english: "to understand" },
+                { japanese: "れんしゅう (します)", english: "practice (to practise)" },
+                { japanese: "ならいます", english: "to learn" },
+                { japanese: "はなし (話)", english: "a story, a talk" },
+                { japanese: "はじめます", english: "to begin, to start" },
+                { japanese: "はじまります", english: "to begin, to start" },
+                { japanese: "おわります", english: "to end, to finish" },
+                { japanese: "えらびます", english: "to choose, to select, to elect" },
+                { japanese: "せつめい (します)", english: "explanation (to explain)" },
+                { japanese: "やめます", english: "to stop, to quit" },
+                { japanese: "もんだい", english: "problem, question, issue" },
+                { japanese: "ただしい", english: "correct, right" },
+                { japanese: "こたえ", english: "answer, reply" },
+                { japanese: "こたえます", english: "to answer, to reply" },
+                { japanese: "まちがい", english: "mistake" },
+                { japanese: "まちがえます", english: "to make a mistake" },
+                { japanese: "まなびます (学びます)", english: "to learn (concept)" },
+                { japanese: "かんがえます", english: "to think, consider" },
+                { japanese: "きをつけます (気をつけます)", english: "to pay attention, to be careful" },
+                { japanese: "あいます", english: "to meet" },
+                { japanese: "あそびます", english: "to play" },
+                { japanese: "あるきます", english: "to walk" },
+                { japanese: "いいます", english: "to say" },
+                { japanese: "行きます(いきます)", english: "to go" },
+                { japanese: "おきます", english: "to get up" },
+                { japanese: "新しい(あたらしい)", english: "to be new, to believe" },
+                { japanese: "新しくない", english: "to live" },
+                { japanese: "かきます", english: "to write" },
+                { japanese: "がんばります", english: "to try hard, to do one's best" },
+                { japanese: "帰ります(かえります)", english: "to return, to go home" },
+                { japanese: "来ます(きます)", english: "to come" },
+                { japanese: "すみます", english: "to reside, to live a tenancy" },
+                { japanese: "ありがとう", english: "to take a shower" },
+                { japanese: "ねます", english: "to sleep" },
+                { japanese: "のみます", english: "to drink" },
+                { japanese: "はたらきます", english: "to work" },
+                { japanese: "およぎます", english: "to swim" },
+                { japanese: "およぐ", english: "to look, to see" },
+                { japanese: "おきします", english: "to remember" },
+                { japanese: "うごきます", english: "to move" },
+                { japanese: "れんしゅうします", english: "to learn" }
+            ],
+            Adjectives: [
+                { japanese: "たのしい", english: "fun" },
+                { japanese: "おもしろい", english: "interesting" },
+                { japanese: "つまらない", english: "boring" },
+                { japanese: "やさしい", english: "easy, nice" },
+                { japanese: "むずかしい", english: "difficult" },
+                { japanese: "いそがしい", english: "busy" },
+                { japanese: "いい・よい", english: "good" },
+                { japanese: "わるい", english: "bad" },
+                { japanese: "かっこいい", english: "cool" },
+                { japanese: "あかるい", english: "bright, cheerful" },
+                { japanese: "きびしい", english: "strict" },
+                { japanese: "かわいい", english: "cute" },
+                { japanese: "こわい", english: "scary" },
+                { japanese: "あたらしい", english: "new" },
+                { japanese: "ふるい", english: "old" },
+                { japanese: "きたない", english: "dirty, messy" },
+                { japanese: "高い (たかい)", english: "tall, expensive" },
+                { japanese: "やすい", english: "cheap" },
+                { japanese: "すごい", english: "amazing" },
+                { japanese: "すばらしい", english: "wonderful" },
+                { japanese: "おいしい", english: "yummy" },
+                { japanese: "まずい", english: "tastes disgusting" },
+                { japanese: "うれしい", english: "happy" },
+                { japanese: "かなしい", english: "sad" },
+                { japanese: "さびしい", english: "lonely" },
+                { japanese: "おかしい", english: "funny, odd" },
+                { japanese: "しんせつ", english: "kind" },
+                { japanese: "しずか", english: "quiet" },
+                { japanese: "元気 (げんき)", english: "healthy, energetic" },
+                { japanese: "すてき", english: "splendid" },
+                { japanese: "へん", english: "weird" },
+                { japanese: "好き (すき)", english: "to like" },
+                { japanese: "きれい", english: "pretty, clean" },
+                { japanese: "ゆう名 (ゆうめい)", english: "famous" },
+                { japanese: "まじめ", english: "serious" },
+                { japanese: "にぎやか", english: "lively, bustling (place)" },
+                { japanese: "べんり", english: "convenient" },
+                { japanese: "いや", english: "unpleasant" },
+                { japanese: "たいせつ", english: "important" },
+                { japanese: "でんとうてき", english: "traditional" },
+                { japanese: "たいへん", english: "tough" },
+                { japanese: "かわいい", english: "cute" },
+                { japanese: "こわい", english: "scary" },
+                { japanese: "おもしろい", english: "interesting" },
+                { japanese: "つまらない", english: "boring" },
+                { japanese: "きびしい", english: "strict" },
+                { japanese: "やさしい", english: "nice, easy" },
+                { japanese: "あかるい", english: "cheerful, bright" },
+                { japanese: "うるさい", english: "loud" },
+                { japanese: "かっこいい", english: "cool" },
+                { japanese: "いい", english: "good" },
+                { japanese: "わるい", english: "bad" },
+                { japanese: "あたまがいい", english: "smart" },
+                { japanese: "あたまがわるい", english: "stupid" },
+                { japanese: "せいかくがいい", english: "good personality" },
+                { japanese: "すごい", english: "amazing" },
+                { japanese: "つよい", english: "strong" },
+                { japanese: "きれい", english: "beautiful" },
+                { japanese: "しんせつ", english: "kind" },
+                { japanese: "きたない", english: "dirty, messy" },
+                { japanese: "たのしい", english: "fun" },
+                { japanese: "むずかしい", english: "difficult" },
+                { japanese: "しずか", english: "quiet" },
+                { japanese: "げんき（元気）", english: "healthy, active" },
+                { japanese: "ゆうめい", english: "famous" },
+                { japanese: "しょうじき", english: "honest" },
+                { japanese: "まじめ", english: "serious" },
+                { japanese: "へん", english: "strange" },
+                { japanese: "～がじょうず", english: "is good at ~" },
+                { japanese: "ロマンチック", english: "romantic" },
+                { japanese: "シャイ", english: "shy" },
+                { japanese: "かしこい", english: "clever" },
+                { japanese: "おしゃべり", english: "chatty" },
+                { japanese: "おとなしい", english: "quiet, gentle, obedient" },
+                { japanese: "ていねい", english: "polite" },
+                { japanese: "しつれい", english: "rude" },
+                { japanese: "ひろい", english: "spacious" },
+                { japanese: "せまい", english: "narrow, cramped" },
+                { japanese: "大きい (おおきい)", english: "big" },
+                { japanese: "小さい (ちいさい)", english: "small" },
+                { japanese: "あかるい", english: "bright" },
+                { japanese: "くらい", english: "dark" },
+                { japanese: "べんり", english: "convenient" },
+                { japanese: "ふべん", english: "inconvenient" },
+                { japanese: "ちかい", english: "close, nearby" },
+                { japanese: "とおい", english: "far away" },
+                { japanese: "あたらしい", english: "new" },
+                { japanese: "ふるい", english: "old (objects)" },
+                { japanese: "しずか", english: "quiet" },
+                { japanese: "にぎやか", english: "bustling" },
+                { japanese: "きれい", english: "beautiful" },
+                { japanese: "きたない", english: "dirty, messy" },
+                { japanese: "うるさい", english: "noisy, loud" },
+                { japanese: "すてき", english: "nice, wonderful" },
+                { japanese: "でんとうてき", english: "traditional" },
+                { japanese: "モダン", english: "modern" }
+            ],
+
+            timeExpressions: [
+                { japanese: "今 (いま)", english: "now" },
+                { japanese: "いつ", english: "when?" },
+                { japanese: "何時 (なんじ)", english: "what time?" },
+                { japanese: "時間 (じかん)", english: "time" },
+                { japanese: "ひまな時 (ひまなとき)", english: "free time" },
+                { japanese: "かかります", english: "it takes (time)" },
+                { japanese: "どのくらい", english: "how long?" },
+                { japanese: "から", english: "from" },
+                { japanese: "まで", english: "until" },
+                { japanese: "前 (まえ)", english: "before, in front of" },
+                { japanese: "あとで", english: "after, later" },
+                { japanese: "また", english: "again" },
+                { japanese: "ごろ", english: "approximately" },
+                { japanese: "ぐらい", english: "approximately" },
+                { japanese: "ちょうど", english: "exactly" },
+                { japanese: "もう", english: "already" },
+                { japanese: "まだ", english: "not yet, still" },
+                { japanese: "すぐ", english: "straight away" },
+                { japanese: "もうすぐ", english: "soon" },
+                { japanese: "この間 (このあいだ)", english: "the other day" },
+                { japanese: "さいきん", english: "recently, these days" },
+                { japanese: "つぎ", english: "next" },
+                { japanese: "(じかんを) すごします", english: "to pass (time)" },
+                { japanese: "きのう", english: "yesterday" },
+                { japanese: "今日 (きょう)", english: "today" },
+                { japanese: "あした", english: "tomorrow" },
+                { japanese: "先週 (せんしゅう)", english: "last week" },
+                { japanese: "今週 (こんしゅう)", english: "this week" },
+                { japanese: "来週 (らいしゅう)", english: "next week" },
+                { japanese: "先月 (せんげつ)", english: "last month" },
+                { japanese: "今月 (こんげつ)", english: "this month" },
+                { japanese: "来月 (らいげつ)", english: "next month" },
+                { japanese: "きょ年 (きょねん)", english: "last year" },
+                { japanese: "今年 (ことし)", english: "this year" },
+                { japanese: "来年 (らいねん)", english: "next year" },
+                { japanese: "こんど", english: "this time, next time" },
+                { japanese: "今ばん (こんばん)", english: "tonight" },
+                { japanese: "毎～ (まい～)", english: "every -" },
+                { japanese: "毎あさ (まいあさ)", english: "every morning" },
+                { japanese: "毎日 (まいにち)", english: "every day" },
+                { japanese: "今や (こんや)", english: "this evening" },
+                { japanese: "ゆうべ", english: "last night" },
+                { japanese: "何よう日 (なんようび)", english: "What day of the week?" },
+                { japanese: "日よう日 (にちようび)", english: "Sunday" },
+                { japanese: "月よう日 (げつようび)", english: "Monday" },
+                { japanese: "火よう日 (かようび)", english: "Tuesday" },
+                { japanese: "水よう日 (すいようび)", english: "Wednesday" },
+                { japanese: "木よう日 (もくようび)", english: "Thursday" },
+                { japanese: "金よう日 (きんようび)", english: "Friday" },
+                { japanese: "土よう日 (どようび)", english: "Saturday" },
+                { japanese: "週まつ (しゅうまつ)", english: "weekend" },
+                { japanese: "あさ", english: "morning" },
+                { japanese: "ひる", english: "day time" },
+                { japanese: "よる", english: "night, evening" },
+                { japanese: "ご前 (ごぜん)", english: "a.m, morning" },
+                { japanese: "ごご", english: "p.m, afternoon" },
+                { japanese: "年 (ねん, ねん)", english: "year" },
+                { japanese: "けさ", english: "this morning" },
+                { japanese: "ばん", english: "evening, night" },
+                { japanese: "ひるま", english: "daytime" },
+                { japanese: "半年 (はんとし)", english: "half year" },
+                { japanese: "毎日 (まいにち)", english: "every day" },
+                { japanese: "いつも", english: "always" },
+                { japanese: "たいてい", english: "usually" },
+                { japanese: "よく", english: "often" },
+                { japanese: "時々 (ときどき)", english: "sometimes" },
+                { japanese: "あまり・あんまり + neg", english: "don't really -" },
+                { japanese: "ぜんぜん + neg", english: "never -" },
+                { japanese: "たまに", english: "occasionally" },
+                { japanese: "毎日(まいにち)", english: "everyday" },
+                { japanese: "いつも", english: "always" },
+                { japanese: "たいてい", english: "usually" },
+                { japanese: "よく", english: "often" },
+                { japanese: "時々(ときどき)", english: "sometimes" },
+                { japanese: "たまに", english: "occasionally" },
+                { japanese: "あまり・あんまり + NEG", english: "don't really ~" },
+                { japanese: "ぜんぜん + NEG", english: "never ~" },
+                { japanese: "本当に(ほんとうに)", english: "really" },
+                { japanese: "とても", english: "very" },
+                { japanese: "すごく", english: "very" },
+                { japanese: "たいへん", english: "very, tough" },
+                { japanese: "けっこう", english: "fairly" },
+                { japanese: "ぜんぶ", english: "all, entirely" },
+                { japanese: "たくさん", english: "many, a lot" },
+                { japanese: "すこし", english: "a little" },
+                { japanese: "ちょっと", english: "a little" },
+                { japanese: "きっと", english: "surely" },
+                { japanese: "たぶん", english: "maybe" },
+                { japanese: "きのう", english: "yesterday" },
+                { japanese: "今日(きょう)", english: "today" },
+                { japanese: "あした", english: "tomorrow" },
+                { japanese: "先週(せんしゅう)", english: "last week" },
+                { japanese: "今週(こんしゅう)", english: "this week" },
+                { japanese: "来週(らいしゅう)", english: "next week" },
+                { japanese: "先月(せんげつ)", english: "last month" },
+                { japanese: "今月(こんげつ)", english: "this month" },
+                { japanese: "来月(らいげつ)", english: "next month" },
+                { japanese: "去年(きょねん)", english: "last year" },
+                { japanese: "今年(ことし)", english: "this year" },
+                { japanese: "来年(らいねん)", english: "next year" }
+            ],
+             body: [
+                { japanese: "からだ", english: "body" },
+                { japanese: "あたま", english: "head" },
+                { japanese: "かお", english: "face" },
+                { japanese: "かみのけ", english: "hair" },
+                { japanese: "め（目）", english: "eyes" },
+                { japanese: "みみ", english: "ears" },
+                { japanese: "はな", english: "nose" },
+                { japanese: "くち（口）", english: "mouth" },
+                { japanese: "うで", english: "arm" },
+                { japanese: "て", english: "hand" },
+                { japanese: "ゆび", english: "finger" },
+                { japanese: "おなか", english: "stomach" },
+                { japanese: "あし", english: "leg, foot" },
+                { japanese: "のど", english: "throat" },
+                { japanese: "くび", english: "neck" },
+                { japanese: "こころ", english: "heart, spirit" },
+                { japanese: "こえ", english: "voice" },
+                { japanese: "は", english: "tooth" },
+                { japanese: "かた", english: "shoulder" },
+                { japanese: "ひざ", english: "knees" },
+                { japanese: "せなか", english: "back" },
+                { japanese: "おしり", english: "bum" },
+                { japanese: "あしくび", english: "ankle" },
+                { japanese: "あしゆび", english: "toes" }
+            ],
+
+            places: [
+                { japanese: "えき", english: "station" },
+                { japanese: "みせ", english: "shops" },
+                { japanese: "レストラン", english: "restaurant" },
+                { japanese: "コンビニ", english: "convenience store" },
+                { japanese: "スーパー", english: "supermarket" },
+                { japanese: "デパート", english: "department store" },
+                { japanese: "としょかん", english: "library" },
+                { japanese: "バスてい", english: "bus stop" },
+                { japanese: "ゆうびんきょく", english: "post office" },
+                { japanese: "びょういん", english: "hospital" },
+                { japanese: "ショッピングセンター", english: "shopping centre" },
+                { japanese: "くうこう", english: "airport" },
+                { japanese: "こうえん", english: "park" },
+                { japanese: "大学(だいがく)", english: "university" },
+                { japanese: "びじゅつかん", english: "art gallery" },
+                { japanese: "きっさてん", english: "cafe" },
+                { japanese: "ぎんこう(ぎんこう)", english: "bank" },
+                { japanese: "どうぶつえん(どうぶつえん)", english: "zoo" },
+                { japanese: "ビル", english: "building" },
+                { japanese: "りょかん", english: "Japanese inn" },
+                { japanese: "こうばん", english: "police box" },
+                { japanese: "はくぶつかん", english: "museum" },
+                { japanese: "おてら", english: "temple" },
+                { japanese: "じんじゃ", english: "shrine" },
+                { japanese: "ちかてつ", english: "subway" },
+                { japanese: "たてもの", english: "building" },
+                { japanese: "やっきょく", english: "drugstore" },
+                { japanese: "きょうかい", english: "church" },
+                { japanese: "ガソリンスタンド", english: "petrol station" },
+                { japanese: "タクシーのりば", english: "taxi stand" },
+                { japanese: "パブ", english: "pub" },
+                { japanese: "町 (まち)", english: "city, town" },
+                { japanese: "所 (ところ)", english: "place" },
+                { japanese: "ば所 (ばしょ)", english: "place, location" },
+                { japanese: "とかい", english: "city, metropolitan" },
+                { japanese: "田舎 (いなか)", english: "countryside" },
+                { japanese: "きんじょ (きんじょ)", english: "neighbourhood" },
+                { japanese: "海 (うみ)", english: "beach, sea, ocean" },
+                { japanese: "川 (かわ)", english: "river" },
+                { japanese: "はな", english: "flower" },
+                { japanese: "木 (き)", english: "tree" },
+                { japanese: "えき", english: "station" },
+                { japanese: "学校 (がっこう)", english: "school" },
+                { japanese: "バステい", english: "bus stop" },
+                { japanese: "スーパー", english: "supermarket" },
+                { japanese: "コンビニ", english: "convenience store" },
+                { japanese: "デパート", english: "department store" },
+                { japanese: "こうえん", english: "park" },
+                { japanese: "山 (やま)", english: "mountain" },
+                { japanese: "グラウンド", english: "sportsground, oval" },
+                { japanese: "レストラン", english: "restaurant" },
+                { japanese: "たて物 (たてもの・ビル)", english: "building" },
+                { japanese: "としょかん", english: "library" },
+                { japanese: "田んぼ (たんぼ)", english: "rice field" },
+                { japanese: "ぎんこう", english: "bank" },
+                { japanese: "にくや", english: "butcher" },
+                { japanese: "パンや", english: "bakery" },
+                { japanese: "さかなや", english: "fish shop" },
+                { japanese: "やおや", english: "greengrocer" },
+                { japanese: "はなや", english: "florist" },
+                { japanese: "本や (ほんや)", english: "bookstore" },
+                { japanese: "こうばん", english: "police box" },
+                { japanese: "びょういん", english: "hospital" },
+                { japanese: "ゆうびんきょく", english: "post office" },
+                { japanese: "しぜん", english: "nature" },
+                { japanese: "きょうかい", english: "church" },
+                { japanese: "水海 (みずうみ)", english: "lake" },
+                { japanese: "しま", english: "island" }
+            ],
+            conjunctions: [
+                { japanese: "そして", english: "and then, and" },
+                { japanese: "それから", english: "after that, and" },
+                { japanese: "そのあと", english: "after that" },
+                { japanese: "それで", english: "because of that" },
+                { japanese: "それに", english: "besides that" },
+                { japanese: "その前(そのまえ)", english: "before that" },
+                { japanese: "でも", english: "but" },
+                { japanese: "だから", english: "therefore" },
+                { japanese: "その時(そのとき)", english: "at that time" },
+                { japanese: "たとえば", english: "for example" },
+                { japanese: "じゃ", english: "well" },
+                { japanese: "では", english: "well" },
+                { japanese: "～が", english: "~ but" },
+                { japanese: "～(だ)けど", english: "~but" },
+                { japanese: "じつは", english: "to tell you the truth" },
+                { japanese: "しかし", english: "however" },
+                { japanese: "または", english: "also" },
+                { japanese: "とくに", english: "especially" }
+            ],
+
+            weather: [
+                { japanese: "天気(てんき)", english: "weather" },
+                { japanese: "天気よほう(てんきよほう)", english: "weather forecast" },
+                { japanese: "はれ", english: "fine, clear [weather]" },
+                { japanese: "くもり", english: "cloudy" },
+                { japanese: "雨(あめ)[～がふります]", english: "rain" },
+                { japanese: "ゆき[～がふります]", english: "snow" },
+                { japanese: "～のち～", english: "~then~ (weather)" },
+                { japanese: "時々(～ときどき～)", english: "~sometimes~ (weather)" },
+                { japanese: "(に)なります", english: "to become" },
+                { japanese: "さむい", english: "cold [weather]" },
+                { japanese: "すずしい", english: "cool [weather]" },
+                { japanese: "あたたかい", english: "warm" },
+                { japanese: "あつい", english: "hot" },
+                { japanese: "むしあつい", english: "humid" },
+                { japanese: "かぜ", english: "wind" },
+                { japanese: "かぜがつよい", english: "strong wind" },
+                { japanese: "いい天気(いいてんき)", english: "good weather" },
+                { japanese: "わるい天気(わるいてんき)", english: "bad weather" },
+                { japanese: "気おん(きおん)", english: "temperature" },
+                { japanese: "～ど", english: "~degrees" },
+                { japanese: "～でしょう", english: "probably ~" },
+                { japanese: "さいこう気おん", english: "maximum temperature" },
+                { japanese: "さいてい気おん", english: "minimum temperature" },
+                { japanese: "たいふう", english: "typhoon" },
+                { japanese: "くらい", english: "dark" },
+                { japanese: "つゆ", english: "rainy season" }
+            ],
+            housing: [
+                { japanese: "家(うち・いえ)", english: "house, home" },
+                { japanese: "アパート", english: "apartment" },
+                { japanese: "マンション", english: "mansion" },
+                { japanese: "住みます(すみます)", english: "to live" },
+                { japanese: "へや", english: "room" },
+                { japanese: "しんしつ", english: "bedroom" },
+                { japanese: "いま", english: "living room" },
+                { japanese: "食どう(しょくどう)", english: "dining room" },
+                { japanese: "だいどころ", english: "kitchen" },
+                { japanese: "ふろば", english: "bathroom" },
+                { japanese: "トイレ", english: "toilet" },
+                { japanese: "おてあらい", english: "washroom" },
+                { japanese: "にわ", english: "garden" },
+                { japanese: "げんかん", english: "house entrance" },
+                { japanese: "バルコニー", english: "balcony" },
+                { japanese: "わしつ", english: "Japanese style room" },
+                { japanese: "ようしつ", english: "Western style room" },
+                { japanese: "ガレージ", english: "garage" },
+                { japanese: "ろうか", english: "corridor" },
+                { japanese: "うらにわ", english: "backyard" },
+                { japanese: "べんきょうべや", english: "study room" },                
+                { japanese: "コンピューターしつ", english: "computer room" },
+                { japanese: "～かい", english: "level ~" },
+                { japanese: "住所(じゅうしょ)", english: "address" },
+                { japanese: "ひっこします", english: "to move house" }
+            ],
+            household: [
+                { japanese: "しょうじ", english: "paper sliding door" },
+                { japanese: "たたみ", english: "tatami mat" },
+                { japanese: "こたつ", english: "kotatsu" },
+                { japanese: "おふろ", english: "bath" },
+                { japanese: "とこのま", english: "tokonoma (alcove)" },
+                { japanese: "ふとん", english: "futon bedding" },
+                { japanese: "ざぶとん", english: "cushion [for sitting on]" },
+                { japanese: "スリッパ", english: "slipper" },
+                { japanese: "いけばな", english: "flower arrangement" },
+                { japanese: "くつばこ", english: "shoebox" },
+                { japanese: "つくえ", english: "desk" },
+                { japanese: "いす", english: "chair" },
+                { japanese: "テーブル", english: "table" },
+                { japanese: "ソファー", english: "sofa" },
+                { japanese: "テレビ", english: "TV" },
+                { japanese: "本だな(ほんだな)", english: "bookcase" },
+                { japanese: "ごみばこ", english: "rubbish bin" },
+                { japanese: "れいぞうこ", english: "fridge" },
+                { japanese: "電子レンジ(でんしレンジ)", english: "microwave" },
+                { japanese: "ベッド", english: "bed" },
+                { japanese: "ストーブ", english: "stove" },
+                { japanese: "コンピューター", english: "computer" },
+                { japanese: "おしいれ", english: "cupboard" },
+                { japanese: "ぬいぐるみ", english: "stuffed toy" },
+                { japanese: "とけい", english: "clock, watch" },
+                { japanese: "しんぶん", english: "newspaper" },
+                { japanese: "せんたくき", english: "washing machine" },
+                { japanese: "電気スタンド(でんきスタンド)", english: "lamp" },
+                { japanese: "かいだん", english: "stairs" },
+                { japanese: "エアコン", english: "aircon" },
+                { japanese: "ヒーター", english: "heater" },
+                { japanese: "まど", english: "window" },
+                { japanese: "ドア", english: "door" }
+            ],
+            plain: [
+                { japanese: "あいます", english: "to meet" },
+                { japanese: "あそびます", english: "to play" },
+                { japanese: "あるきます", english: "to walk" },
+                { japanese: "いいます", english: "to say" },
+                { japanese: "行きます(いきます)", english: "to go" },
+                { japanese: "おきます", english: "to get up" },
+                { japanese: "新しい(あたらしい)", english: "to be new, to believe" },
+                { japanese: "新しくない", english: "to live" },
+                { japanese: "かきます", english: "to write" },
+                { japanese: "がんばります", english: "to try hard, to do one's best" },
+                { japanese: "帰ります(かえります)", english: "to return, to go home" },
+                { japanese: "来ます(きます)", english: "to come" },
+                { japanese: "すみます", english: "to reside, to live a tenancy" },
+                { japanese: "ありがとう", english: "to take a shower" },
+                { japanese: "ねます", english: "to sleep" },
+                { japanese: "のみます", english: "to drink" },
+                { japanese: "はたらきます", english: "to work" },
+                { japanese: "およぎます", english: "to swim" },
+                { japanese: "およぐ", english: "to look, to see" },
+                { japanese: "おこします", english: "to remember" },
+                { japanese: "うごきます", english: "to move" },
+                { japanese: "れんしゅうします", english: "to learn" },
+                { japanese: "あいます", english: "to meet" },
+                { japanese: "あそびます", english: "to play" },
+                { japanese: "あるきます", english: "to walk" },
+                { japanese: "いいます", english: "to say" },
+                { japanese: "行きます(いきます)", english: "to go" },
+                { japanese: "おきます", english: "to get up" },
+                { japanese: "新しい(あたらしい)", english: "to be new, to believe" },
+                { japanese: "新しくない", english: "to live" },
+                { japanese: "かきます", english: "to write" },
+                { japanese: "がんばります", english: "to try hard, to do one's best" },
+                { japanese: "帰ります(かえります)", english: "to return, to go home" },
+                { japanese: "来ます(きます)", english: "to come" },
+                { japanese: "すみます", english: "to reside, to live a tenancy" },
+                { japanese: "ありがとう", english: "to take a shower" },
+                { japanese: "ねます", english: "to sleep" },
+                { japanese: "のみます", english: "to drink" },
+                { japanese: "はたらきます", english: "to work" },
+                { japanese: "およぎます", english: "to swim" },
+                { japanese: "およぐ", english: "to look, to see" },
+                { japanese: "おきします", english: "to remember" },
+                { japanese: "うごきます", english: "to move" },
+                { japanese: "れんしゅうします", english: "to learn" }
+            ],
+            subjects: [
+                { japanese: "かもく", english: "subjects" },
+                { japanese: "えいご (英語)", english: "English" },
+                { japanese: "すうがく (数学)", english: "Maths" },
+                { japanese: "かがく (化学)", english: "Science, Chemistry" },
+                { japanese: "りか", english: "Science" },
+                { japanese: "にほんご (日本語)", english: "Japanese" },
+                { japanese: "おんがく", english: "Music" },
+                { japanese: "れきし", english: "History" },
+                { japanese: "ちり", english: "Geography" },
+                { japanese: "びじゅつ", english: "Art" },
+                { japanese: "たいいく", english: "PE" },
+                { japanese: "かていか", english: "Home Economics" },
+                { japanese: "ぎじゅつ", english: "Technology" },
+                { japanese: "こくご (国語)", english: "National Language" },
+                { japanese: "ぶつり (物理)", english: "Physics" },
+                { japanese: "せいぶつ (生物)", english: "Biology" },
+                { japanese: "しゃかい", english: "Social Studies" },
+                { japanese: "ほうりつ", english: "Legal" },
+                { japanese: "けいざい", english: "Economics" },
+                { japanese: "えんげき・ドラマ", english: "Drama" },
+                { japanese: "コンピューター", english: "Computing" },
+                { japanese: "ビジネスがく (ビジネス学)", english: "Business Studies" },
+                { japanese: "ほけんたいいく", english: "PDHPE" }
+            ],
+            school: [
+                { japanese: "がっこう (学校)", english: "school" },
+                { japanese: "しょうがっこう (小学校)", english: "primary school" },
+                { japanese: "しょうがくせい (小学生)", english: "primary school student" },
+                { japanese: "ちゅうがっこう (中学校)", english: "junior high school" },
+                { japanese: "ちゅうがくせい (中学生)", english: "junior high student" },
+                { japanese: "こうこう (高校)", english: "senior high school" },
+                { japanese: "こうこうせい (高校生)", english: "senior high school student" },
+                { japanese: "だいがく (大学)", english: "university" },
+                { japanese: "だいがくせい (大学生)", english: "university student" },
+                { japanese: "〜ねんせい (〜年生)", english: "- year level, - grade" },
+                { japanese: "せんせい (先生)", english: "teacher" },
+                { japanese: "せいと (生徒)", english: "student" },
+                { japanese: "がくせい (学生)", english: "student" },
+                { japanese: "(〜に) かよいます", english: "to commute (to~)" },
+                { japanese: "こうちょうせんせい (校長先生)", english: "principal" },
+                { japanese: "こうりつがっこう (公立学校)", english: "public school" },
+                { japanese: "しりつがっこう (私立学校)", english: "private school" },
+                { japanese: "しまいこう (姉妹校)", english: "sister school" },
+                { japanese: "じかんわり (時間割)", english: "timetable" },
+                { japanese: "〜じかんめ (〜時間目)", english: "period ~" },
+                { japanese: "ホームルーム", english: "homeroom" },
+                { japanese: "やすみじかん (休み時間)", english: "break time" },
+                { japanese: "きゅうけい", english: "recess" },
+                { japanese: "ひるやすみ (昼休み)", english: "lunchtime" },
+                { japanese: "ほうかご", english: "after school" },
+                { japanese: "そうじ", esnglish: "cleaning" },
+                { japanese: "ぶかつ", english: "club activities" },
+                { japanese: "クラブかつどう", english: "club activities" },
+                { japanese: "〜ぶ", english: "- club" },
+                { japanese: "きょうしつ", english: "classroom" },
+                { japanese: "せつめい", english: "explanation" },
+                { japanese: "きょうかしょ・テキスト", english: "textbook" },
+                { japanese: "えんそく", english: "excursion" },
+                { japanese: "しゅくだい", english: "homework" },
+                { japanese: "テスト", english: "test" },
+                { japanese: "しけん", english: "exam" },
+                { japanese: "ノート", english: "notebook" },
+                { japanese: "じゅぎょう", english: "lesson" },
+                { japanese: "クラス", english: "class" },
+                { japanese: "えんそく", english: "excursion" },
+                { japanese: "じゅく", english: "cram school, tutoring" },
+                { japanese: "おべんとう", english: "boxed lunch" },
+                { japanese: "せいふく", english: "uniform" },
+                { japanese: "せいせき", english: "marks, academic result" },
+                { japanese: "きそく", english: "rule, regulation" },
+                { japanese: "なつやすみ (夏休み)", english: "summer vacation" },
+                { japanese: "やすみます (休みます)", english: "to rest, to be absent" },
+                { japanese: "そつぎょうします", english: "to graduate" },
+                { japanese: "そつぎょうしき", english: "graduation ceremony" },
+                { japanese: "りゅうがくします (留学します)", english: "to go on exchange" },
+                { japanese: "りゅうがくせい (留学生)", english: "exchange student" },
+                { japanese: "さくぶん", english: "essay" },
+                { japanese: "テキスト", english: "textbook" },
+                { japanese: "きょうかしょ", english: "textbook" },
+                { japanese: "(〜に) かよいます", english: "to commute (to~)" },
+                { japanese: "あいさつします", english: "to greet" },
+                { japanese: "うんどうかい", english: "sports carnival" },
+                { japanese: "にゅうがくします (入学します)", english: "to enter a school" },
+                { japanese: "にゅうがくしけん (入学試験)", english: "school entrance exam" },
+                { japanese: "にゅうがくしき (入学式)", english: "school entrance ceremony" },
+                { japanese: "ごみ", english: "rubbish" },
+                { japanese: "かします", english: "to lend" },
+                { japanese: "かります", english: "to borrow" },
+                { japanese: "しけん (にうかります)", english: "(to pass) an exam" },
+                { japanese: "しけん (をうけます)", english: "(to sit for) an exam" },
+                { japanese: "きょうしつ", english: "classroom" },
+                { japanese: "ホール", english: "hall" },
+                { japanese: "ばいてん", english: "canteen, kiosk" },
+                { japanese: "たいいくかん", english: "gymnasium" },
+                { japanese: "としょかん", english: "library" },
+                { japanese: "こうてい (校庭)", english: "school playground" },
+                { japanese: "ろうか", english: "corridor, passage" },
+                { japanese: "コンピューター室", english: "computer room" }
+            ],
+             transportation: [
+                { japanese: "車 (くるま)", english: "car" },
+                { japanese: "電車 (でんしゃ)", english: "train" },
+                { japanese: "じてん車 (じてんしゃ)", english: "bicycle" },
+                { japanese: "ひこうき", english: "plane" },
+                { japanese: "バス", english: "bus" },
+                { japanese: "ふね", english: "boat" },
+                { japanese: "しんかんせん", english: "bullet train" },
+                { japanese: "ちかてつ", english: "subway" },
+                { japanese: "タクシー", english: "taxi" },
+                { japanese: "あるいて", english: "by foot" },
+                { japanese: "オートバイ", english: "motorbike" },
+                { japanese: "トラム", english: "tram" }
+            ],
+            descriptive: [
+                { japanese: "(～に)ちかい", english: "close to -" },
+                { japanese: "(～に)とおい", english: "far from -" },
+                { japanese: "聞こえます (きこえます)", english: "can hear, to be audible" },
+                { japanese: "見えます (みえます)", english: "can see, to be visible" },
+                { japanese: "しぜんがおおい", english: "lots of nature" },
+                { japanese: "みどりがおおい", english: "lots of greenery" },
+                { japanese: "けしきがきれい", english: "beautiful scenery" },
+                { japanese: "いい", english: "good" },
+                { japanese: "わるい", english: "bad" },
+                { japanese: "おもしろい", english: "interesting" },
+                { japanese: "たのしい", english: "fun" },
+                { japanese: "むずかしい", english: "difficult" },
+                { japanese: "つまらない", english: "boring" },
+                { japanese: "やさしい", english: "easy, nice" },
+                { japanese: "きびしい", english: "strict" },
+                { japanese: "すき (好き)", english: "to like" },
+                { japanese: "きらい", english: "to hate" },
+                { japanese: "とくい", english: "skilful, good at" },
+                { japanese: "じょうず (上手)", english: "skilful, good at" },
+                { japanese: "にがて", english: "unskilful, bad at" },
+                { japanese: "へた (下手)", english: "unskilful, bad at" },
+                { japanese: "しずか", english: "quiet" },
+                { japanese: "きれい", english: "pretty, clean" },
+                { japanese: "ゆうめい (有名)", english: "famous" },
+                { japanese: "べんり", english: "convenient" },
+                { japanese: "じゅぎょう", english: "lessons" },
+                { japanese: "ぶかつ", english: "club activities" },
+                { japanese: "しゅくだい", english: "homework" },
+                { japanese: "しけん", english: "exams" },
+                { japanese: "やすみ (休み)", english: "holidays" },
+                { japanese: "わかりやすい (分かりやすい)", english: "easy to understand" },
+                { japanese: "わかりにくい (分かりにくい)", english: "difficult to understand" },
+                { japanese: "いや", english: "dislike" },
+                { japanese: "たいへん", english: "tough" },
+                { japanese: "でんとうてき", english: "traditional" },
+                { japanese: "かんたん", english: "easy, simple" }
+            ],
+
+            directions: [
+                { japanese: "ここ・こっち・こちら", english: "here" },
+                { japanese: "そこ・そっち・そちら", english: "there" },
+                { japanese: "あそこ・あっち・あちら", english: "over there" },
+                { japanese: "どこ", english: "where?" },
+                { japanese: "まっすぐ", english: "straight" },
+                { japanese: "左(ひだり)", english: "left" },
+                { japanese: "右(みぎ)", english: "right" },
+                { japanese: "まがります", english: "to turn" },
+                { japanese: "みち", english: "road, street" },
+                { japanese: "かど", english: "corner" },
+                { japanese: "しんごう", english: "traffic light" },
+                { japanese: "こうさてん", english: "intersection" },
+                { japanese: "つぎの〜", english: "next -" },
+                { japanese: "一つ目・一番目(ひとつめ・いちばんめ)", english: "the first -" },
+                { japanese: "二つ目・二番目(ふたつめ・にばんめ)", english: "the second -" },
+                { japanese: "入口(いりぐち)", english: "entrance" },
+                { japanese: "出口(でぐち)", english: "exit" },
+                { japanese: "〜と", english: "if, when -" },
+                { japanese: "そうすると", english: "if you do that" },
+                { japanese: "左がわ(ひだりがわ)", english: "on the left side" },
+                { japanese: "右がわ(みぎがわ)", english: "on the ride side" },
+                { japanese: "はし", english: "bridge" },
+                { japanese: "おうだんほどう", english: "pedestrian crossing" },
+                { japanese: "わたります", english: "to cross" },
+                { japanese: "このへん", english: "around here" },
+                { japanese: "まわり", english: "surrounding area" },
+                { japanese: "まわります", english: "to go around" },
+                { japanese: "とおります", english: "to pass through" },
+                { japanese: "まん中(まんなか)", english: "centre, middle" },
+                { japanese: "ほう", english: "direction, way" }
+            ],
+            health: [
+                { japanese: "いしゃ", english: "doctor" },
+                { japanese: "けんこう", english: "health" },
+                { japanese: "生活(せいかつ)", english: "lifestyle" },
+                { japanese: "びょうき(びょうき)", english: "sick" },
+                { japanese: "びょういん", english: "hospital" },
+                { japanese: "元気(げんき)", english: "healthy" },
+                { japanese: "気持ち(きもち)", english: "feeling" },
+                { japanese: "気分がいい(きぶんがいい)", english: "to feel good" },
+                { japanese: "気分がわるい(きぶんがわるい)", english: "to feel bad" },
+                { japanese: "大丈夫(だいじょうぶ)", english: "OK" },
+                { japanese: "〜がいたい", english: "~ hurts" },
+                { japanese: "あたまがいたい", english: "headache" },
+                { japanese: "のどがいたい", english: "sore throat" },
+                { japanese: "おなかがいたい", english: "stomach ache" },
+                { japanese: "かぜをひきます", english: "to catch a cold" },
+                { japanese: "ねつがあります", english: "to have a fever" },
+                { japanese: "せきがでます", english: "to have a cough" },
+                { japanese: "けがをします", english: "to have an injury" },
+                { japanese: "しんぱいします", english: "to worry" },
+                { japanese: "くすり", english: "medicine" },
+                { japanese: "〜かい", english: "~ times" },
+                { japanese: "ゆっくり", english: "slowly, leisurely" },
+                { japanese: "休みます(やすみます)", english: "to rest, take a break" },
+                { japanese: "うんどうします", english: "to exercise" },
+                { japanese: "からだにいい", english: "good for your body" },
+                { japanese: "からだにわるい", english: "bad for your body" },
+                { japanese: "けんこうにいい", english: "good for your health" },
+                { japanese: "ストレス", english: "stress" },
+                { japanese: "アレルギー", english: "allergy" },
+                { japanese: "アドバイス", english: "advice" },
+                { japanese: "たばこをすいます", english: "to smoke" },
+                { japanese: "おさけをのみます", english: "to drink alcohol" },
+                { japanese: "十分(じゅうぶん)", english: "enough" },
+                { japanese: "気をつけます(きをつけます)", english: "to take care, be careful" },
+                { japanese: "お大事に(おたいじに)", english: "look after yourself" }
+            ],
+            shopping: [
+                { japanese: "おつり", english: "change" },
+                { japanese: "ぜんぶで", english: "altogether" },
+                { japanese: "かしこまりました", english: "understood, certainly" },
+                { japanese: "いくら", english: "how much?" },
+                { japanese: "ちゅうもん", english: "order" },
+                { japanese: "ちゅうもんします", english: "to order" },
+                { japanese: "〜にします", english: "I have decided on ~" },
+                { japanese: "これ", english: "this" },
+                { japanese: "この", english: "this (noun)" },
+                { japanese: "それ", english: "that" },
+                { japanese: "その", english: "that (noun)" },
+                { japanese: "あれ", english: "that over there" },
+                { japanese: "あの", english: "that (noun) over there" },
+                { japanese: "どれ", english: "which" },
+                { japanese: "どの", english: "which (noun)" },
+                { japanese: "高い(たかい)", english: "expensive, tall" },
+                { japanese: "やすい", english: "cheap" },
+                { japanese: "〜の", english: "~ one" },
+                { japanese: "ねだん", english: "price, cost" },
+                { japanese: "エレベーター", english: "elevator" },
+                { japanese: "ちか〜かい", english: "basement ~ floor" },
+                { japanese: "いらっしゃいませ", english: "welcome" },
+                { japanese: "てんいん", english: "shop assistant" },
+                { japanese: "ウェーター", english: "waiter" },
+                { japanese: "おきゃくさん", english: "customer" },
+                { japanese: "おねがいします", english: "please" },
+                { japanese: "〜はどうですか", english: "how about ~?" },
+                { japanese: "〜を下さい(〜をください)", english: "please give me ~" },
+                { japanese: "どうぞ", english: "here you go" },
+                { japanese: "見せます(みせます)", english: "to show" },
+                { japanese: "〜うりば", english: "~ counter" },
+                { japanese: "〜コーナー", english: "~ corner, section" },
+                { japanese: "〜かい", english: "~ level" },
+                { japanese: "お金(おかね)", english: "money" }
+            ],
+            clothing: [
+                { japanese: "ティーシャツ", english: "T-shirt" },
+                { japanese: "ふく", english: "clothes" },
+                { japanese: "ようふく", english: "western clothes" },
+                { japanese: "ぼうし", english: "hat" },
+                { japanese: "めがね", english: "glasses" },
+                { japanese: "アクセサリー", english: "accessories" },
+                { japanese: "うわぎ", english: "jacket" },
+                { japanese: "おしゃれ", english: "stylish, fashionable" },
+                { japanese: "コート", english: "coat" },
+                { japanese: "さいふ", english: "wallet" },
+                { japanese: "サンダル", english: "sandals" },
+                { japanese: "下ぎ(したぎ)", english: "underwear" },
+                { japanese: "ぬぎます", english: "to take off" },
+                { japanese: "ネクタイ", english: "a tie" },
+                { japanese: "ブラウス", english: "blouse" },
+                { japanese: "ベルト", english: "belt" },
+                { japanese: "ハンカチ", english: "handkerchief" },
+                { japanese: "かばん", english: "bag" },
+                { japanese: "ピアスをします", english: "to have a piercing" },
+                { japanese: "マニキュアをします", english: "to have nail polish" },
+                { japanese: "ゆびわをします", english: "to wear a ring" },
+                { japanese: "きます", english: "to wear (upper body)" },
+                { japanese: "はきます", english: "to wear (lower body)" },
+                { japanese: "かぶります", english: "to put on (over head)" },
+                { japanese: "くつ", english: "shoes" },
+                { japanese: "くつ下(くつした)", english: "socks" },
+                { japanese: "ジーンズ", english: "jeans" },
+                { japanese: "シャツ", english: "shirt" },
+                { japanese: "スカート", english: "skirt" },
+                { japanese: "ズボン", english: "trousers" },
+                { japanese: "セーター", english: "sweater, jumper" }
+            ],
+            food: [
+                { japanese: "食べ物(たべもの)", english: "food" },
+                { japanese: "わ食・日本食(わしょく・にほんしょく)", english: "Japanese food" },
+                { japanese: "よう食(ようしょく)", english: "Western food" },
+                { japanese: "ごはん", english: "meal, cooked rice" },
+                { japanese: "にく", english: "meat" },
+                { japanese: "やさい", english: "vegetables" },
+                { japanese: "さかな", english: "fish" },
+                { japanese: "すし", english: "sushi" },
+                { japanese: "さしみ", english: "sashimi" },
+                { japanese: "ラーメン", english: "ramen noodles" },
+                { japanese: "そば", english: "soba noodles" },
+                { japanese: "やきそば", english: "fried noodles" },
+                { japanese: "うどん", english: "udon noodles" },
+                { japanese: "てんぷら", english: "tempura" },
+                { japanese: "とうふ", english: "tofu" },
+                { japanese: "おにぎり", english: "rice ball" },
+                { japanese: "おべんとう", english: "boxed lunch" },
+                { japanese: "やきとり", english: "yakitori" },
+                { japanese: "みそしる", english: "miso soup" },
+                { japanese: "おやつ", english: "snack" },
+                { japanese: "おかし", english: "sweets, lollies" },
+                { japanese: "水(みず)", english: "water" },
+                { japanese: "おちゃ", english: "green tea" },
+                { japanese: "ぎょうざ", english: "dumplings" },
+                { japanese: "もち", english: "rice cakes" },
+                { japanese: "カレー", english: "curry" },
+                { japanese: "からあげ", english: "fried chicken" },
+                { japanese: "すきやき", english: "beef hotpot" },
+                { japanese: "おこのみやき", english: "savoury pancakes" },
+                { japanese: "てい食(ていしょく)", english: "set meal" },
+                { japanese: "とんかつ", english: "pork cutlet" },
+                { japanese: "なっとう", english: "fermented soybeans" }
+            ]
+        };
+            
+          
+
+        let allCards = [];
+        let currentIndex = 0;
+        let isFlipped = false;
+        let currentCategory = 'all';
+
+        // Flatten all cards into one array
+        function updateCardsList() {
+            allCards = [];
+            if (currentCategory === 'all') {
+                Object.values(flashcards).forEach(category => {
+                    allCards = allCards.concat(category);
+                });
+            } else {
+                allCards = flashcards[currentCategory] || [];
+            }
+            
+            // Shuffle cards
+            for (let i = allCards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [allCards[i], allCards[j]] = [allCards[j], allCards[i]];
+            }
+            
+            currentIndex = 0;
+            updateCard();
+        }
+
+        function updateCard() {
+            if (allCards.length === 0) return;
+            
+            const card = allCards[currentIndex];
+            const flashcard = document.getElementById('flashcard');
+            const japanese = document.getElementById('japanese');
+            const english = document.getElementById('english');
+            const progress = document.getElementById('progress');
+            
+            japanese.textContent = card.japanese;
+            english.textContent = isFlipped ? card.english : "Click to reveal";
+            progress.textContent = `${currentIndex + 1} / ${allCards.length}`;
+            
+            flashcard.classList.toggle('flipped', isFlipped);
+        }
+
+        function flipCard() {
+            isFlipped = !isFlipped;
+            updateCard();
+        }
+
+        function nextCard() {
+            currentIndex = (currentIndex + 1) % allCards.length;
+            isFlipped = false;
+            updateCard();
+        }
+
+        function prevCard() {
+            currentIndex = currentIndex === 0 ? allCards.length - 1 : currentIndex - 1;
+            isFlipped = false;
+            updateCard();
+        }
+
+        // Event listeners
+        document.getElementById('flashcard').addEventListener('click', flipCard);
+        document.getElementById('nextBtn').addEventListener('click', nextCard);
+        document.getElementById('prevBtn').addEventListener('click', prevCard);
+        
+        document.getElementById('categorySelect').addEventListener('change', (e) => {
+            currentCategory = e.target.value;
+            isFlipped = false;
+            updateCardsList();
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            switch(e.key) {
+                case ' ':
+                case 'Enter':
+                    e.preventDefault();
+                    flipCard();
+                    break;
+                case 'ArrowRight':
+                case 'n':
+                    nextCard();
+                    break;
+                case 'ArrowLeft':
+                case 'p':
+                    prevCard();
+                    break;
+            }
+        });
+
+        // Initialize
+        updateCardsList();
+    </script>
+</body>
+</html>
